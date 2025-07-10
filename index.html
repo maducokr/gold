@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>골든 코인 투하 게임</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: url('gold.png') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 10px;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    #coinCount {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 215, 0, 0.9);
+      color: #333;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      z-index: 100;
+      backdrop-filter: blur(5px);
+      border: 2px solid #FFD700;
+    }
+    
+
+    
+    #scoreBoard {
+      position: fixed;
+      font-size: 18px;
+      top: 50px;
+      margin-top: 5px;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 5px;
+      border-radius: 10px;
+      display: inline-block;
+      backdrop-filter: blur(5px);
+    }
+    
+    h1, p {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 8px;
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+      display: inline-block;
+      font-size: 14px;
+      margin: 5px;
+    }
+    
+    h1 {
+      font-size: 16px;
+      margin-top: 60px;
+    }
+    
+    #movingDish {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      z-index: 5;
+      transition: all 0.5s ease-in-out;
+      cursor: pointer;
+    }
+    
+    #coinButton {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      color: #333;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 100;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    #coinButton:hover {
+      transform: translateX(-50%) scale(1.05);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+    
+    #coinButton:active {
+      transform: translateX(-50%) scale(0.95);
+    }
+    
+    .coin {
+      position: absolute;
+      font-size: 60px;
+      z-index: 15;
+      animation: fallDown 3s linear forwards, sparkle 1s infinite;
+      pointer-events: none;
+      top: -50px;
+    }
+    @keyframes fallDown {
+      0% {
+        top: -50px;
+        opacity: 1;
+      }
+      100% {
+        top: 100vh;
+        opacity: 0;
+      }
+    }
+    @keyframes sparkle {
+      0%   { filter: brightness(1.5) drop-shadow(0 0 10px #fff6b0); transform: scale(1);}
+      20%  { filter: brightness(2.5) drop-shadow(0 0 20px #fff6b0); transform: scale(1.15);}
+      40%  { filter: brightness(1.2) drop-shadow(0 0 5px #fff6b0); transform: scale(1);}
+      60%  { filter: brightness(2.2) drop-shadow(0 0 15px #fff6b0); transform: scale(1.12);}
+      80%  { filter: brightness(1.2) drop-shadow(0 0 5px #fff6b0); transform: scale(1);}
+      100% { filter: brightness(1.5) drop-shadow(0 0 10px #fff6b0); transform: scale(1);}
+    }
+  </style>
+</head>
+<body>
+  
+  <div id="coinCount">🪙 Gold Coin: 0개  Money: 0$</div>
+  <img id="movingDish" src="dish.png" alt="dish" style="display:block;" />
+  <button id="coinButton">🪙 Drop Coins</button>
+
+  <script>
+    const scoreBoard = document.getElementById("scoreBoard");
+    const movingDish = document.getElementById("movingDish");
+    const coinButton = document.getElementById("coinButton");
+    const coinCount = document.getElementById("coinCount");
+    let score = 0;
+    let gameOver = false;
+    let totalCoins = 0;
+
+    // 화살표 랜덤 이동 함수
+    function moveDish() {
+      if (gameOver) return;
+      const dishWidth = 100;
+      const dishHeight = 100;
+      const maxX = Math.min(window.innerWidth, 400) - dishWidth;
+      const maxY = window.innerHeight - 100;
+      const newX = Math.random() * maxX;
+      const newY = Math.random() * maxY;
+      movingDish.style.left = newX + 'px';
+      movingDish.style.top = newY + 'px';
+    }
+
+    let dishInterval = null;
+    function startDishMove() {
+      if (dishInterval) clearInterval(dishInterval);
+      moveDish();
+      dishInterval = setInterval(moveDish, 3000);
+    }
+    function stopDishMove() {
+      if (dishInterval) clearInterval(dishInterval);
+      dishInterval = null;
+    }
+
+    // 금괴 떨어뜨리기 함수
+    function dropCoins() {
+      // 버튼 클릭 시 점수 초기화
+      score = 0;
+      const coinAmount = Math.floor(Math.random() * 101); // 0-50개
+      totalCoins = coinAmount;
+      updateCoinCount();
+      // 비행접시 멈춤
+      stopDishMove();
+      let finished = 0;
+      if (coinAmount === 0) {
+        // 아무 금괴도 없으면 바로 재시작
+        startDishMove();
+        return;
+      }
+     
+      
+      for (let i = 0; i < coinAmount; i++) {
+      
+        setTimeout(() => {
+          const coin = document.createElement("div");
+          coin.classList.add("coin");
+          coin.innerHTML = `<svg width="60" height="40" viewBox="0 0 60 40">
+            <ellipse cx="30" cy="20" rx="28" ry="16" fill="#FFD700" stroke="#B8860B" stroke-width="6"/>
+            <ellipse cx="30" cy="20" rx="20" ry="10" fill="#FFC300" opacity="0.8"/>
+          </svg>`;
+          // 랜덤한 시작 위치 (화면 상단)
+          const startX = Math.random() * Math.min(window.innerWidth, 400);
+          coin.style.left = startX + 'px';
+          coin.style.top = '-50px';
+          document.body.appendChild(coin);
+          score = i * 1000;
+          updateCoinCount();
+          // 애니메이션 완료 후 제거
+          setTimeout(() => {
+            if (coin.parentNode) {
+              coin.parentNode.removeChild(coin);
+            }
+            finished++;
+            if (finished === coinAmount) {
+              // 모든 금괴가 떨어진 후 점수 초기화 및 비행접시 재시작
+             
+              startDishMove();
+            }
+          }, 3000);
+        }, i * 100); // 각 금괴마다 0.1초씩 지연
+
+        
+      }
+    
+    }
+
+    // 금괴 개수 업데이트
+    function updateCoinCount() {
+      coinCount.textContent = `🪙 Gold Coin: ${totalCoins}개  Total $: ${score+1000}$`;
+       
+      }
+
+    // 초기 화살표 위치 설정
+    startDishMove();
+
+    // 버튼 클릭 이벤트
+    coinButton.addEventListener("click", dropCoins);
+    
+    // dish 클릭 이벤트
+    movingDish.addEventListener("click", function() {
+      window.open("");
+    });
+
+
+  </script>
+</body>
+</html>

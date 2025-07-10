@@ -6,17 +6,24 @@
   <title>골든 코인 투하 게임</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       text-align: center;
       background: url('gold.png') no-repeat center center fixed;
       background-size: cover;
       margin: 0;
-      padding: 10px;
+      padding: 0;
       min-height: 100vh;
       position: relative;
       overflow: hidden;
-      max-width: 400px;
-      margin: 0 auto;
+      width: 100%;
+      max-width: 100%;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
     
     #coinCount {
@@ -24,107 +31,153 @@
       top: 10px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: rgba(255, 215, 0, 0.9);
+      background-color: rgba(255, 215, 0, 0.95);
       color: #333;
-      padding: 10px 20px;
-      border-radius: 20px;
-      font-size: 18px;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-size: 16px;
       font-weight: bold;
       z-index: 100;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(10px);
       border: 2px solid #FFD700;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      min-width: 200px;
+      white-space: nowrap;
     }
     
 
     
     #scoreBoard {
       position: fixed;
-      font-size: 18px;
-      top: 50px;
-      margin-top: 5px;
-      background-color: rgba(255, 255, 255, 0.9);
-      padding: 5px;
-      border-radius: 10px;
+      font-size: 14px;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 8px 16px;
+      border-radius: 15px;
       display: inline-block;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      z-index: 99;
     }
     
     h1, p {
-      background-color: rgba(255, 255, 255, 0.9);
-      padding: 8px;
-      border-radius: 10px;
-      backdrop-filter: blur(5px);
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 10px 16px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
       display: inline-block;
-      font-size: 14px;
-      margin: 5px;
+      font-size: 12px;
+      margin: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
     
     h1 {
-      font-size: 16px;
-      margin-top: 60px;
+      font-size: 14px;
+      margin-top: 120px;
+      font-weight: bold;
     }
     
     #movingDish {
       position: absolute;
-      width: 100px;
-      height: 100px;
+      width: 80px;
+      height: 80px;
       z-index: 5;
-      transition: all 0.5s ease-in-out;
+      transition: all 0.8s ease-in-out;
       cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+    
+    @media (max-width: 480px) {
+      #movingDish {
+        width: 70px;
+        height: 70px;
+      }
     }
     
     #coinButton {
       position: fixed;
-      bottom: 20px;
+      bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
       background: linear-gradient(45deg, #FFD700, #FFA500);
       color: #333;
       border: none;
-      padding: 15px 30px;
-      border-radius: 25px;
-      font-size: 16px;
+      padding: 18px 36px;
+      border-radius: 30px;
+      font-size: 18px;
       font-weight: bold;
       cursor: pointer;
       z-index: 100;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      min-width: 160px;
+      min-height: 60px;
     }
     
     #coinButton:hover {
       transform: translateX(-50%) scale(1.05);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
     }
     
     #coinButton:active {
       transform: translateX(-50%) scale(0.95);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    @media (max-width: 480px) {
+      #coinButton {
+        bottom: 20px;
+        padding: 16px 32px;
+        font-size: 16px;
+        min-width: 140px;
+        min-height: 56px;
+      }
     }
     
     .coin {
       position: absolute;
-      font-size: 60px;
+      font-size: 50px;
       z-index: 15;
       animation: fallDown 3s linear forwards, sparkle 1s infinite;
       pointer-events: none;
       top: -50px;
+      touch-action: none;
+    }
+    
+    @media (max-width: 480px) {
+      .coin {
+        font-size: 40px;
+      }
     }
     @keyframes fallDown {
       0% {
         top: -50px;
         opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.1);
       }
       100% {
         top: 100vh;
         opacity: 0;
+        transform: scale(0.8);
       }
     }
     @keyframes sparkle {
-      0%   { filter: brightness(1.5) drop-shadow(0 0 10px #fff6b0); transform: scale(1);}
-      20%  { filter: brightness(2.5) drop-shadow(0 0 20px #fff6b0); transform: scale(1.15);}
-      40%  { filter: brightness(1.2) drop-shadow(0 0 5px #fff6b0); transform: scale(1);}
-      60%  { filter: brightness(2.2) drop-shadow(0 0 15px #fff6b0); transform: scale(1.12);}
-      80%  { filter: brightness(1.2) drop-shadow(0 0 5px #fff6b0); transform: scale(1);}
-      100% { filter: brightness(1.5) drop-shadow(0 0 10px #fff6b0); transform: scale(1);}
+      0%   { filter: brightness(1.5) drop-shadow(0 0 10px #fff6b0); }
+      20%  { filter: brightness(2.5) drop-shadow(0 0 20px #fff6b0); }
+      40%  { filter: brightness(1.2) drop-shadow(0 0 5px #fff6b0); }
+      60%  { filter: brightness(2.2) drop-shadow(0 0 15px #fff6b0); }
+      80%  { filter: brightness(1.2) drop-shadow(0 0 5px #fff6b0); }
+      100% { filter: brightness(1.5) drop-shadow(0 0 10px #fff6b0); }
     }
   </style>
 </head>
@@ -142,14 +195,17 @@
     let score = 0;
     let gameOver = false;
     let totalCoins = 0;
+    
+    // 모바일 터치 이벤트 지원
+    let isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-    // 화살표 랜덤 이동 함수
+    // 비행접시 랜덤 이동 함수
     function moveDish() {
       if (gameOver) return;
-      const dishWidth = 100;
-      const dishHeight = 100;
-      const maxX = Math.min(window.innerWidth, 400) - dishWidth;
-      const maxY = window.innerHeight - 100;
+      const dishWidth = isTouchDevice ? 70 : 80;
+      const dishHeight = isTouchDevice ? 70 : 80;
+      const maxX = window.innerWidth - dishWidth;
+      const maxY = window.innerHeight - 150; // 버튼 공간 확보
       const newX = Math.random() * maxX;
       const newY = Math.random() * maxY;
       movingDish.style.left = newX + 'px';
@@ -160,7 +216,7 @@
     function startDishMove() {
       if (dishInterval) clearInterval(dishInterval);
       moveDish();
-      dishInterval = setInterval(moveDish, 3000);
+      dishInterval = setInterval(moveDish, isTouchDevice ? 2500 : 3000);
     }
     function stopDishMove() {
       if (dishInterval) clearInterval(dishInterval);
@@ -171,7 +227,7 @@
     function dropCoins() {
       // 버튼 클릭 시 점수 초기화
       score = 0;
-      const coinAmount = Math.floor(Math.random() * 101); // 0-50개
+      const coinAmount = Math.floor(Math.random() * 101); // 0-100개
       totalCoins = coinAmount;
       updateCoinCount();
       // 비행접시 멈춤
@@ -189,12 +245,13 @@
         setTimeout(() => {
           const coin = document.createElement("div");
           coin.classList.add("coin");
-          coin.innerHTML = `<svg width="60" height="40" viewBox="0 0 60 40">
+          const coinSize = isTouchDevice ? 40 : 50;
+          coin.innerHTML = `<svg width="${coinSize}" height="${coinSize * 0.67}" viewBox="0 0 60 40">
             <ellipse cx="30" cy="20" rx="28" ry="16" fill="#FFD700" stroke="#B8860B" stroke-width="6"/>
             <ellipse cx="30" cy="20" rx="20" ry="10" fill="#FFC300" opacity="0.8"/>
           </svg>`;
           // 랜덤한 시작 위치 (화면 상단)
-          const startX = Math.random() * Math.min(window.innerWidth, 400);
+          const startX = Math.random() * window.innerWidth;
           coin.style.left = startX + 'px';
           coin.style.top = '-50px';
           document.body.appendChild(coin);
@@ -212,7 +269,7 @@
               startDishMove();
             }
           }, 3000);
-        }, i * 100); // 각 금괴마다 0.1초씩 지연
+        }, i * (isTouchDevice ? 80 : 100)); // 모바일에서는 더 빠르게
 
         
       }
@@ -221,20 +278,42 @@
 
     // 금괴 개수 업데이트
     function updateCoinCount() {
-      coinCount.textContent = `🪙 Gold Coin: ${totalCoins}개  Total $: ${score+1000}$`;
-       
-      }
+      const displayText = isTouchDevice 
+        ? `🪙 ${totalCoins}개  $${score+1000}`
+        : `🪙 Gold Coin: ${totalCoins}개  Total $: ${score+1000}$`;
+      coinCount.textContent = displayText;
+    }
 
-    // 초기 화살표 위치 설정
+    // 초기 비행접시 위치 설정
     startDishMove();
 
-    // 버튼 클릭 이벤트
+    // 버튼 클릭/터치 이벤트
     coinButton.addEventListener("click", dropCoins);
+    coinButton.addEventListener("touchend", function(e) {
+      e.preventDefault();
+      dropCoins();
+    });
     
-    // dish 클릭 이벤트
+    // 비행접시 클릭/터치 이벤트
     movingDish.addEventListener("click", function() {
       window.open("");
     });
+    movingDish.addEventListener("touchend", function(e) {
+      e.preventDefault();
+      window.open("");
+    });
+    
+    // 화면 크기 변경 시 비행접시 위치 재조정
+    window.addEventListener('resize', function() {
+      if (!gameOver) {
+        moveDish();
+      }
+    });
+    
+    // 모바일에서 스크롤 방지
+    document.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+    }, { passive: false });
 
 
   </script>

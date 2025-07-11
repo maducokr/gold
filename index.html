@@ -196,9 +196,9 @@
 </head>
 <body>
   
-  <div id="coinCount">🪙 0개  $1000</div>
+  <div id="coinCount">🪙 1piece  1000$</div>
   <img id="movingDish" src="dish.png" alt="비행접시" style="display:block;" />
-  <button id="coinButton">🪙 코인 투하!</button>
+  <button id="coinButton">🪙 Gold drop!</button>
 
   <script>
     const scoreBoard = document.getElementById("scoreBoard");
@@ -291,7 +291,7 @@
 
     // 금괴 개수 업데이트 (모바일 최적화)
     function updateCoinCount() {
-      coinCount.textContent = `🪙 Coin${totalCoins}개  Total$${score+1000}`;
+      coinCount.textContent = `🪙 Gold ${totalCoins}  Total ${score+1000}$`;
     }
 
     // 초기 비행접시 위치 설정
